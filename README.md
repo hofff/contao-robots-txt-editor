@@ -9,7 +9,8 @@ Provides an editor for auto creation and modification of ROBOTS.TXT inside a Con
 
 ## Features
 
-- ???
+- Define content of ROBOTS.TXT in root page
+- Add absolute path to sitemap
 
 
 ## Compatibility
