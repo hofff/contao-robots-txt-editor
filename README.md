@@ -2,7 +2,7 @@
 [![Installations via composer per month](http://img.shields.io/packagist/dm/hofff/contao-robots-txt-editor.svg?style=flat)](https://packagist.org/packages/hofff/contao-robots-txt-editor)
 [![Installations via composer total](http://img.shields.io/packagist/dt/hofff/contao-robots-txt-editor.svg?style=flat)](https://packagist.org/packages/hofff/contao-robots-txt-editor)
 
-# Contao Extension: hofff.com - Recursive Download Folder
+# Contao Extension: hofff.com - ROBOTS.TXT Editor
 
 Provides an editor for auto creation and modification of ROBOTS.TXT inside a Contao root page.
 
