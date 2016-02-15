@@ -14,6 +14,12 @@
 			"email": "cliff@hofff.com",
 			"homepage": "https://hofff.com",
 			"role": "Developer"
+		},
+		{
+			"name": "Nicky Hoff",
+			"homepage": "https://hofff.com",
+			"email": "nick@hofff.com",
+			"role": "Manager"
 		}
 	],
 	"require": {
@@ -27,11 +33,13 @@
 	"extra" : {
 		"contao" : {
 			"sources" : {
-				"system/modules/hofff_robots-txt-editor" : "system/modules/hofff_robots-txt-editor"
+				"CT_ROOT/system/modules/hofff_robots-txt-editor" : "system/modules/hofff_robots-txt-editor"
 			}
 		},
 		"branch-alias": {
 			"dev-master": "1.0.x-dev"
 		}
-	}
+	},
+	"prefer-stable": true,
+	"minimum-stability": "dev"
 }
