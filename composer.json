@@ -1,9 +1,9 @@
 {
 	"name": "hofff/contao-robots-txt-editor",
-	"description": "Editor for auto creation and modification of ROBOTS.TXT.",
+	"description": "Editor for auto creation and modification of robots.txt.",
 	"keywords": [
 		"contao",
-		"ROBOTS.TXT"
+		"robots.txt"
 	],
 	"type": "contao-module",
 	"license": "LGPL-3.0+",
