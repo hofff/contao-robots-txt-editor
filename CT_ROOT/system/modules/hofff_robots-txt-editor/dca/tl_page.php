@@ -47,7 +47,7 @@ $GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_
  * Class tl_page_hofff_robots_txt_editor
  *
  * Provide miscellaneous methods that are used by the data configuration array.
- * @copyright  Hofff.com 2015-2016
+ * @copyright  Hofff.com 2016-2016
  * @author     Cliff Parnitzky <cliff@hofff.com>
  * @package    Core
  */
