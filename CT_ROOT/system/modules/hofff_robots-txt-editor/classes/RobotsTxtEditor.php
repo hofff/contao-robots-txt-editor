@@ -37,12 +37,20 @@ class RobotsTxtEditor extends \System
     {
       return '';
     }
+    
+    if (!file_exists(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
+    {
+      \Message::addError($GLOBALS['TL_LANG']['ERR']['no_robotstxt_default']);
+      $this->redirect(str_replace('&key=importRobotsTxt', '', \Environment::get('request')));
+    }
 
     $objVersions = new \Versions($dc->table, \Input::get('id'));
     $objVersions->create();
+    
+    $strFileContent = file_get_contents(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT);
 
     \Database::getInstance()->prepare("UPDATE " . $dc->table . " SET robotsTxtContent=? WHERE id=?")
-                            ->execute("DEFAULT kommt noch", \Input::get('id'));
+                            ->execute($strFileContent, \Input::get('id'));
 
     $this->redirect(str_replace('&key=importRobotsTxt', '', \Environment::get('request')));
   }
