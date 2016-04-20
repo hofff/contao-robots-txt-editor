@@ -80,11 +80,11 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   }
   
   /**
-	 * Add a link to the robots.txt import wizard
-	 * @return string
-	 */
-	public function robotsTxtImportWizard()
-	{
-		return ' <a href="' . $this->addToUrl('key=importRobotsTxt') . '" title="' . specialchars($GLOBALS['TL_LANG']['tl_page']['robotsTxtContentImport'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('theme_import.gif', $GLOBALS['TL_LANG']['tl_page']['robotsTxtContentImport'][0], 'style="vertical-align:text-bottom"') . '</a>';
-	} 
+   * Add a link to the robots.txt import wizard
+   * @return string
+   */
+  public function robotsTxtImportWizard()
+  {
+    return ' <a href="' . $this->addToUrl('key=importRobotsTxt') . '" title="' . specialchars($GLOBALS['TL_LANG']['tl_page']['robotsTxtContentImport'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('theme_import.gif', $GLOBALS['TL_LANG']['tl_page']['robotsTxtContentImport'][0], 'style="vertical-align:text-bottom"') . '</a>';
+  } 
 } 
