@@ -33,15 +33,15 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtContent'] = array
   'xlabel' => array
   (
     array('tl_page_hofff_robots_txt_editor', 'robotsTxtImportWizard')
-  ), 
-  'sql'                     => "text NULL" 
+  ),
+  'sql'                     => "text NULL"
 );
 
 /**
  * Table tl_page
  */
-$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt'); 
-$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess'); 
+$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt');
+$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess');
 
 /**
  * Class tl_page_hofff_robots_txt_editor
@@ -60,25 +60,25 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   {
     parent::__construct();
   }
-  
+
   /**
    * Modify the pallete and fields for this module
    */
   public function updateRobotsTxt(DataContainer $dc)
   {
-    \System::log('Create new robots.txt file.', 'tl_page_hofff_robots_txt_editor::updateRobotsTxt()', 'TL_INFO'); 
+    \System::log('Create new robots.txt file.', 'tl_page_hofff_robots_txt_editor::updateRobotsTxt()', 'TL_INFO');
   }
-    
+
   public function updateHtaccess(DataContainer $dc)
   {
-    \System::log('Updating .htaccess file.', 'tl_page_hofff_robots_txt_editor::updateHtaccess()', 'TL_INFO'); 
+    \System::log('Updating .htaccess file.', 'tl_page_hofff_robots_txt_editor::updateHtaccess()', 'TL_INFO');
     /*if (isset($GLOBALS['TL_CONFIG']['redirect4ward_use_htaccess']) && $GLOBALS['TL_CONFIG']['redirect4ward_use_htaccess'] && in_array('htaccess', $this->Config->getActiveModules()))
     {
       $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
       $objHtaccess->update();
     }*/
   }
-  
+
   /**
    * Add a link to the robots.txt import wizard
    * @return string
@@ -86,5 +86,5 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   public function robotsTxtImportWizard()
   {
     return ' <a href="' . $this->addToUrl('key=importRobotsTxt') . '" title="' . specialchars($GLOBALS['TL_LANG']['tl_page']['robotsTxtContentImport'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('theme_import.gif', $GLOBALS['TL_LANG']['tl_page']['robotsTxtContentImport'][0], 'style="vertical-align:text-bottom"') . '</a>';
-  } 
-} 
+  }
+}
