@@ -34,16 +34,16 @@ class CreateDefaultRobotsTxt extends Controller
    */
   public function run()
   {
-      if (!file_exists(TL_ROOT . "/robots.txt.default"))
+      if (!file_exists(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
       {
         
-        if (copy(TL_ROOT . "/robots.txt", TL_ROOT . "/robots.txt.default"))
+        if (copy(TL_ROOT . "/" . FILE_ROBOTS_TXT, TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
         {
-          \System::log('Initial copied the robots.txt to robots.txt.default', 'CreateDefaultRobotsTxt::run()', 'TL_INFO');
+          \System::log('Initial copied the "' . FILE_ROBOTS_TXT . '" to "' . FILE_ROBOTS_TXT_DEFAULT . '".', 'CreateDefaultRobotsTxt::run()', 'TL_INFO');
         }
         else
         {
-          \System::log('Initial copying the robots.txt failed', 'CreateDefaultRobotsTxt::run()', 'TL_ERROR');
+          \System::log('Initial copying the "' . FILE_ROBOTS_TXT . '" failed.', 'CreateDefaultRobotsTxt::run()', 'TL_ERROR');
         }
       }
   }
