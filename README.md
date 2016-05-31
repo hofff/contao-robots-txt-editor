@@ -19,6 +19,18 @@ Provides an editor for auto creation and modification of robots.txt inside a Con
 - max. Contao version: <  3.6.0
 
 
+## Installation
+
+Install the extension via composer: [hofff/contao-robots-txt-editor](https://packagist.org/packages/hofff/contao-robots-txt-editor).
+
+If you prefer to install it manually, download the latest release here: https://github.com/hofff/contao-robots-txt-editor/releases
+
+
 ## Dependency
 
 There are no dependencies to other extensions, that have to be installed.
+
+
+## Screenshots
+
+![Back end configuration](screenshot-backend.jpg)
