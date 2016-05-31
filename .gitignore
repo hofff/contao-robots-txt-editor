@@ -2,6 +2,7 @@
 !/.gitignore
 !/.gitattributes
 !/CT_ROOT/
+!/CHANGELOG.md
 !/README.md
 !/composer.json
 !/screenshot*.jpg
