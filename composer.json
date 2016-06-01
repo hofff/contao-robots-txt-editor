@@ -1,45 +1,48 @@
 {
-	"name": "hofff/contao-robots-txt-editor",
-	"description": "Editor for auto creation and modification of ROBOTS.TXT.",
-	"keywords": [
-		"contao",
-		"ROBOTS.TXT"
-	],
-	"type": "contao-module",
-	"license": "LGPL-3.0+",
-	"homepage" : "https://hofff.com",
-	"authors": [
-		{
-			"name": "Cliff Parnitzky",
-			"email": "cliff@hofff.com",
-			"homepage": "https://hofff.com",
-			"role": "Developer"
-		},
-		{
-			"name": "Nicky Hoff",
-			"homepage": "https://hofff.com",
-			"email": "nick@hofff.com",
-			"role": "Manager"
-		}
-	],
-	"require": {
-		"php": ">=5.3",
-		"contao/core":">=3.2.0,<3.6",
-		"contao-community-alliance/composer-plugin":"~2.0" 
-	},
-	"conflict": {
-		"contao/core":"3.4.0,3.4.1,3.4.2"
-	},
-	"extra" : {
-		"contao" : {
-			"sources" : {
-				"CT_ROOT/system/modules/hofff_robots-txt-editor" : "system/modules/hofff_robots-txt-editor"
-			}
-		},
-		"branch-alias": {
-			"dev-master": "1.0.x-dev"
-		}
-	},
-	"prefer-stable": true,
-	"minimum-stability": "dev"
+  "name": "hofff/contao-robots-txt-editor",
+  "description": "Editor for auto creation and modification of robots.txt.",
+  "keywords": [
+    "contao",
+    "robots.txt"
+  ],
+  "type": "contao-module",
+  "license": "LGPL-3.0+",
+  "homepage" : "https://hofff.com",
+  "authors": [
+    {
+      "name": "Cliff Parnitzky",
+      "email": "cliff@hofff.com",
+      "homepage": "https://hofff.com",
+      "role": "Developer"
+    },
+    {
+      "name": "Nicky Hoff",
+      "homepage": "https://hofff.com",
+      "email": "nick@hofff.com",
+      "role": "Manager"
+    }
+  ],
+  "require": {
+    "php": ">=5.3",
+    "contao/core":">=3.2.0,<3.6",
+    "contao-community-alliance/composer-plugin":"~2.0" 
+  },
+  "conflict": {
+    "contao/core":"3.4.0,3.4.1,3.4.2"
+  },
+  "extra" : {
+     "contao" : {
+      "sources" : {
+        "CT_ROOT/system/modules/hofff_robots-txt-editor" : "system/modules/hofff_robots-txt-editor"
+      },
+      "runonce": [
+        "runonce/runonce.php"
+      ]
+    },
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "prefer-stable": true,
+  "minimum-stability": "dev"
 }
