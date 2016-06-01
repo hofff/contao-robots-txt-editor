@@ -1,5 +1,5 @@
 Contao Extension "hofff/contao-robots-txt-editor"
 -------------------------------------------------
 
-### Version 1.0.0-beta1 (201x-xx-xx) ###
+### Version 1.0.0-beta1 (2016-06-02) ###
 - Initial release
