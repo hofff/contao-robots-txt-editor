@@ -33,4 +33,4 @@ There are no dependencies to other extensions, that have to be installed.
 
 ## Screenshots
 
-![Back end configuration](screenshot-backend.jpg)
+![Back end configuration](screenshot-backend.png)
