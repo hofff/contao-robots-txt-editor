@@ -1,5 +1,7 @@
 <?php
 
+$GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'][] = array('tl_page_hofff_robots_txt_editor', 'modifyPaletteAndFields');
+
 $arrLegends = explode(";", $GLOBALS['TL_DCA']['tl_page']['palettes']['root']);
 $legendKeyToInsert = 0;
 foreach($arrLegends as $legendKey=>$legend)
@@ -36,12 +38,19 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtContent'] = array
   ),
   'sql'                     => "text NULL"
 );
+$GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtAddAbsoluteSitemapPath'] = array
+(
+  'label'                   => &$GLOBALS['TL_LANG']['tl_page']['robotsTxtAddAbsoluteSitemapPath'],
+  'exclude'                 => true,
+  'inputType'               => 'checkbox',
+  'eval'                    => array('tl_class'=>'w50 clr'),
+  'sql'                     => "char(1) NOT NULL default ''"
+);
 
 /**
  * Table tl_page
  */
 $GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt');
-$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess');
 
 /**
  * Class tl_page_hofff_robots_txt_editor
@@ -60,24 +69,40 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   {
     parent::__construct();
   }
+  
+  /**
+   * Modify the pallete and fields for this page
+   */
+  public function modifyPaletteAndFields($dc)
+  {
+    $objPage = \PageModel::findById((int) $dc->id);
+
+    if ($objPage != null && $objPage->createSitemap && $objPage->createRobotsTxt)
+    {
+      $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] = $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] . ',robotsTxtAddAbsoluteSitemapPath';
+    }
+  }
+
 
   /**
-   * Modify the pallete and fields for this module
+   * Update the robots.txt when saving the page.
    */
   public function updateRobotsTxt(DataContainer $dc)
   {
-    \System::log('Create new robots.txt file.', 'tl_page_hofff_robots_txt_editor::updateRobotsTxt()', 'TL_INFO');
+    if ($dc->activeRecord->createRobotsTxt)
+    {
+      $robotsTxtEditor = new Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor();
+      if ($robotsTxtEditor->createRobotsTxt($dc))
+      {
+        \Message::addInfo($GLOBALS['TL_LANG']['MSC']['robotstxt_updated']);
+      }
+      else
+      {
+        \Message::addError($GLOBALS['TL_LANG']['ERR']['robotstxt_not_updated']);
+      }
+    }
   }
 
-  public function updateHtaccess(DataContainer $dc)
-  {
-    \System::log('Updating .htaccess file.', 'tl_page_hofff_robots_txt_editor::updateHtaccess()', 'TL_INFO');
-    /*if (isset($GLOBALS['TL_CONFIG']['redirect4ward_use_htaccess']) && $GLOBALS['TL_CONFIG']['redirect4ward_use_htaccess'] && in_array('htaccess', $this->Config->getActiveModules()))
-    {
-      $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
-      $objHtaccess->update();
-    }*/
-  }
 
   /**
    * Add a link to the robots.txt import wizard

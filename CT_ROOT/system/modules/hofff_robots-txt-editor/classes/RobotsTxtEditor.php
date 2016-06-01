@@ -54,4 +54,44 @@ class RobotsTxtEditor extends \System
 
     $this->redirect(str_replace('&key=importRobotsTxt', '', \Environment::get('request')));
   }
+  
+  /**
+   * Create the robots.txt
+   * @param \DataContainer
+   */
+  public function createRobotsTxt(\DataContainer $dc)
+  {
+    $filepath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
+    
+    if (!is_writable($filepath))
+    {
+      return false;
+    } 
+    
+    $objPage = $dc->activeRecord;
+                                           
+    if ($objPage != null)
+    {
+      $fileContent = $objPage->robotsTxtContent;
+      
+      if ($objPage->createSitemap && $objPage->sitemapName != '' && $objPage->robotsTxtAddAbsoluteSitemapPath)
+      {
+        $strDomain = ($objPage->useSSL ? 'https://' : 'http://') . ($objPage->dns ?: \Environment::get('host')) . TL_PATH . '/'; 
+        
+        $fileContent .= "\n";
+        $fileContent .= "Sitemap: " . $strDomain . "share/" . $objPage->sitemapName . ".xml";
+      }
+      
+      if (file_put_contents($filepath, $fileContent) === FALSE)
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+    
+    return false;
+  }
 }
