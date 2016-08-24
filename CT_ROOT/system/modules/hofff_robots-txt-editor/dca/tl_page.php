@@ -16,7 +16,7 @@ array_splice($arrLegends, $legendKeyToInsert, 0, "{robotstxt_legend:hide},create
 $GLOBALS['TL_DCA']['tl_page']['palettes']['root'] = implode(";", $arrLegends);
 $GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = "createRobotsTxt";
 
-$GLOBALS['TL_DCA']['tl_page']['subpalettes']['createRobotsTxt'] = "robotsTxtContent";
+$GLOBALS['TL_DCA']['tl_page']['subpalettes']['createRobotsTxt'] = "robotsTxtContent,useDomainSpecificRobotsTxt";
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['createRobotsTxt'] = array
 (
@@ -38,6 +38,14 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtContent'] = array
   ),
   'sql'                     => "text NULL"
 );
+$GLOBALS['TL_DCA']['tl_page']['fields']['useDomainSpecificRobotsTxt'] = array
+(
+  'label'                   => Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::isHtaccessEnabled() ? $GLOBALS['TL_LANG']['tl_page']['useDomainSpecificRobotsTxt_htaccessInstalled'] : $GLOBALS['TL_LANG']['tl_page']['useDomainSpecificRobotsTxt_htaccessNotInstalled'],
+  'exclude'                 => true,
+  'inputType'               => 'checkbox',
+  'eval'                    => array('tl_class'=>'w50', 'submitOnChange'=>true, 'disabled'=>!Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::isHtaccessEnabled()),
+  'sql'                     => "char(1) NOT NULL default ''"
+);
 $GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtAddAbsoluteSitemapPath'] = array
 (
   'label'                   => &$GLOBALS['TL_LANG']['tl_page']['robotsTxtAddAbsoluteSitemapPath'],
@@ -51,6 +59,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtAddAbsoluteSitemapPath'] = arr
  * Table tl_page
  */
 $GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt');
+$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess');
 
 /**
  * Class tl_page_hofff_robots_txt_editor
@@ -77,9 +86,14 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   {
     $objPage = \PageModel::findById((int) $dc->id);
 
-    if ($objPage != null && $objPage->createSitemap && $objPage->createRobotsTxt)
+    if ($objPage != null)
     {
-      $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] = $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] . ',robotsTxtAddAbsoluteSitemapPath';
+      if ($objPage->createSitemap && $objPage->createRobotsTxt)
+      {
+        $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] = $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] . ',robotsTxtAddAbsoluteSitemapPath';
+      }
+      
+      $GLOBALS['TL_DCA']['tl_page']['fields']['dns']['eval']['mandatory'] = $objPage->useDomainSpecificRobotsTxt;
     }
   }
 
@@ -103,6 +117,16 @@ class tl_page_hofff_robots_txt_editor extends tl_page
     }
   }
 
+  public function updateHtaccess(DataContainer $dc)
+  {
+    if (Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::isHtaccessEnabled() && $dc->activeRecord->useDomainSpecificRobotsTxt)
+    {
+      \System::log("Updating .htaccess file. Create RewriteRule from '".$dc->activeRecord->dns."/".Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::getDomainSpecificFilePath($dc->activeRecord->alias)."' to '".$dc->activeRecord->dns."/".FILE_ROBOTS_TXT."'.", __METHOD__, 'TL_INFO');
+      \Message::addInfo($GLOBALS['TL_LANG']['MSC']['htaccess_updated']);
+      //$objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
+      //$objHtaccess->update();
+    }
+  }
 
   /**
    * Add a link to the robots.txt import wizard

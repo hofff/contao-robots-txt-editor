@@ -63,10 +63,10 @@ class RobotsTxtEditor extends \System
   {
     $filepath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
     
-    if (!is_writable($filepath))
+    if (static::isHtaccessEnabled() && $dc->activeRecord->useDomainSpecificRobotsTxt)
     {
-      return false;
-    } 
+      $filepath = TL_ROOT . "/" . static::getDomainSpecificFilePath($dc->activeRecord->alias);
+    }
     
     $objPage = $dc->activeRecord;
                                            
@@ -93,5 +93,21 @@ class RobotsTxtEditor extends \System
     }
     
     return false;
+  }
+  
+  /**
+   * Checks whether the extension 'htaccess' is installed and not inactive.
+   */
+  public static function isHtaccessEnabled ()
+  {
+    return in_array('htaccess', \ModuleLoader::getActive());
+  }
+  
+  /**
+   * Returns the file path to the domain specific robots.txt file.
+   */
+  public static function getDomainSpecificFilePath ($strAlias)
+  {
+    return FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_Folder . "/" . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_PREFIX . $strAlias . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_SUFFIX;;
   }
 }

@@ -4,3 +4,4 @@ $GLOBALS['TL_LANG']['ERR']['no_robotstxt_default'] = "There is no <b>" . FILE_RO
 $GLOBALS['TL_LANG']['ERR']['robotstxt_not_updated'] = "The <b>" . FILE_ROBOTS_TXT . "</b> has not been recreated (possibly, the access to the file is locked).";
 
 $GLOBALS['TL_LANG']['MSC']['robotstxt_updated'] = "The <b>" . FILE_ROBOTS_TXT . "</b> has been recreated.";
+$GLOBALS['TL_LANG']['MSC']['htaccess_updated']  = "The <b>.htaccess</b> has been updated.";
