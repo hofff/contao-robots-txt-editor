@@ -24,5 +24,6 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Classes
-	'Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor' => 'system/modules/hofff_robots-txt-editor/classes/RobotsTxtEditor.php',
+	'Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor'               => 'system/modules/hofff_robots-txt-editor/classes/RobotsTxtEditor.php',
+	'Hofff\Contao\RobotsTxtEditor\RobotsTxtEditorHtaccessWriter' => 'system/modules/hofff_robots-txt-editor/classes/RobotsTxtEditorHtaccessWriter.php',
 ));

@@ -63,7 +63,7 @@ class RobotsTxtEditor extends \System
   {
     $filepath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
     
-    if (static::isHtaccessEnabled() && $dc->activeRecord->useDomainSpecificRobotsTxt)
+    if (static::isDomainSpecicCreationAllowed($dc->activeRecord->useDomainSpecificRobotsTxt))
     {
       $filepath = TL_ROOT . "/" . static::getDomainSpecificFilePath($dc->activeRecord->alias);
     }
@@ -96,11 +96,22 @@ class RobotsTxtEditor extends \System
   }
   
   /**
-   * Checks whether the extension 'htaccess' is installed and not inactive.
+   * Checks whether the extension 'htaccess' is installed and active.
+   * @return True, if the extension 'htaccess' is installed and active.
    */
   public static function isHtaccessEnabled ()
   {
     return in_array('htaccess', \ModuleLoader::getActive());
+  }
+  
+  /**
+   * Checks whether creation of a domain specific robots.txt is allowed.
+   * @param $blnUseDomainSpecificRobotsTxt The value from the DataContainer.
+   * @return True, if the extension 'htaccess' is installed and the parametrized value in the page is checked.
+   */
+  public static function isDomainSpecicCreationAllowed ($blnUseDomainSpecificRobotsTxt)
+  {
+    return static::isHtaccessEnabled() && $blnUseDomainSpecificRobotsTxt;
   }
   
   /**

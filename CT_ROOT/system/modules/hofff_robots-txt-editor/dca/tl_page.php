@@ -108,7 +108,7 @@ class tl_page_hofff_robots_txt_editor extends tl_page
       $robotsTxtEditor = new Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor();
       if ($robotsTxtEditor->createRobotsTxt($dc))
       {
-        \Message::addInfo($GLOBALS['TL_LANG']['MSC']['robotstxt_updated']);
+        \Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['robotstxt_updated']);
       }
       else
       {
@@ -119,12 +119,10 @@ class tl_page_hofff_robots_txt_editor extends tl_page
 
   public function updateHtaccess(DataContainer $dc)
   {
-    if (Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::isHtaccessEnabled() && $dc->activeRecord->useDomainSpecificRobotsTxt)
+    if (Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::isDomainSpecicCreationAllowed($dc->activeRecord->useDomainSpecificRobotsTxt))
     {
-      \System::log("Updating .htaccess file. Create RewriteRule from '".$dc->activeRecord->dns."/".Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::getDomainSpecificFilePath($dc->activeRecord->alias)."' to '".$dc->activeRecord->dns."/".FILE_ROBOTS_TXT."'.", __METHOD__, 'TL_INFO');
-      \Message::addInfo($GLOBALS['TL_LANG']['MSC']['htaccess_updated']);
-      //$objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
-      //$objHtaccess->update();
+      $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
+      $objHtaccess->update();
     }
   }
 
