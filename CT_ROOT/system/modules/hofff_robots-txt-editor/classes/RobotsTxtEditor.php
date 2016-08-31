@@ -61,17 +61,33 @@ class RobotsTxtEditor extends \System
    */
   public function createRobotsTxt(\DataContainer $dc)
   {
-    $filepath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
-    
-    if (static::isDomainSpecicCreationAllowed($dc->activeRecord->useDomainSpecificRobotsTxt))
-    {
-      $filepath = TL_ROOT . "/" . static::getDomainSpecificFilePath($dc->activeRecord->alias);
-    }
+    $filePath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
     
     $objPage = $dc->activeRecord;
-                                           
+        
     if ($objPage != null)
     {
+      if (static::isDomainSpecicCreationAllowed($dc->activeRecord->useDomainSpecificRobotsTxt))
+      {
+        $filePath = TL_ROOT . "/" . static::getDomainSpecificFilePath($dc->activeRecord->alias);
+        
+        // delete the old file, if the alias was changed
+        $objOldPage = \Contao\Database::getInstance()->prepare("SELECT * FROM tl_version WHERE fromTable=? AND pid=? ORDER BY version DESC")
+                                                   ->limit(1)
+                                                   ->execute('tl_page', $dc->id);
+        
+        if ($objOldPage != null && ($strAliasOld = deserialize($objOldPage->data)['alias']) && $strAliasOld!= $objPage->alias)
+        {
+          \Message::addInfo($GLOBALS['TL_LANG']['MSC']['DomainSpecificRobotsTxt_cleared']);
+          $filePathOld = TL_ROOT . "/" . static::getDomainSpecificFilePath($strAliasOld);
+          
+          if (file_exists($filePathOld))
+          {
+            unlink($filePathOld);
+          }
+        }
+      }
+      
       $fileContent = $objPage->robotsTxtContent;
       
       if ($objPage->createSitemap && $objPage->sitemapName != '' && $objPage->robotsTxtAddAbsoluteSitemapPath)
@@ -82,7 +98,7 @@ class RobotsTxtEditor extends \System
         $fileContent .= "Sitemap: " . $strDomain . "share/" . $objPage->sitemapName . ".xml";
       }
       
-      if (file_put_contents($filepath, $fileContent) === FALSE)
+      if (file_put_contents($filePath, $fileContent) === FALSE)
       {
         return false;
       }
