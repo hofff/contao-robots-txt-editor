@@ -48,9 +48,9 @@ class RobotsTxtEditorHtaccessWriter implements \Symfony\Component\EventDispatche
     
     while ($objPages->next())
     {
-      $strRewriteRule = sprintf($GLOBALS['TL_CONFIG']['RobotsTxtEditorRewriteCond'], $this->prepareUrl($objPages->dns))//"domain-a\.tld")
+      $strRewriteRule = sprintf($GLOBALS['TL_CONFIG']['RobotsTxtEditorRewriteCond'], $this->prepareUrl($objPages->dns))
                       . "\n"
-                      . sprintf($GLOBALS['TL_CONFIG']['RobotsTxtEditorRewriteRule'], $this->prepareUrl(FILE_ROBOTS_TXT)/*"robots\.txt"*/, $this->prepareUrl(RobotsTxtEditor::getDomainSpecificFilePath($objPages->alias))/*"share/robots_alias\.txt"*/);
+                      . sprintf($GLOBALS['TL_CONFIG']['RobotsTxtEditorRewriteRule'], $this->prepareUrl(FILE_ROBOTS_TXT), $this->prepareUrl(RobotsTxtEditor::getDomainSpecificFilePath($objPages->alias)));
       $pre = $event->getPre();
       $pre->append(PHP_EOL . $strRewriteRule);
     }
