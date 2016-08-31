@@ -61,17 +61,33 @@ class RobotsTxtEditor extends \System
    */
   public function createRobotsTxt(\DataContainer $dc)
   {
-    $filepath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
-    
-    if (!is_writable($filepath))
-    {
-      return false;
-    } 
+    $filePath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
     
     $objPage = $dc->activeRecord;
-                                           
+        
     if ($objPage != null)
     {
+      if (static::isDomainSpecicCreationAllowed($dc->activeRecord->useDomainSpecificRobotsTxt))
+      {
+        $filePath = TL_ROOT . "/" . static::getDomainSpecificFilePath($dc->activeRecord->alias);
+        
+        // delete the old file, if the alias was changed
+        $objOldPage = \Contao\Database::getInstance()->prepare("SELECT * FROM tl_version WHERE fromTable=? AND pid=? ORDER BY version DESC")
+                                                   ->limit(1)
+                                                   ->execute('tl_page', $dc->id);
+        
+        if ($objOldPage != null && ($strAliasOld = deserialize($objOldPage->data)['alias']) && $strAliasOld!= $objPage->alias)
+        {
+          \Message::addInfo($GLOBALS['TL_LANG']['MSC']['DomainSpecificRobotsTxt_cleared']);
+          $filePathOld = TL_ROOT . "/" . static::getDomainSpecificFilePath($strAliasOld);
+          
+          if (file_exists($filePathOld))
+          {
+            unlink($filePathOld);
+          }
+        }
+      }
+      
       $fileContent = $objPage->robotsTxtContent;
       
       if ($objPage->createSitemap && $objPage->sitemapName != '' && $objPage->robotsTxtAddAbsoluteSitemapPath)
@@ -82,7 +98,7 @@ class RobotsTxtEditor extends \System
         $fileContent .= "Sitemap: " . $strDomain . "share/" . $objPage->sitemapName . ".xml";
       }
       
-      if (file_put_contents($filepath, $fileContent) === FALSE)
+      if (file_put_contents($filePath, $fileContent) === FALSE)
       {
         return false;
       }
@@ -93,5 +109,32 @@ class RobotsTxtEditor extends \System
     }
     
     return false;
+  }
+  
+  /**
+   * Checks whether the extension 'htaccess' is installed and active.
+   * @return True, if the extension 'htaccess' is installed and active.
+   */
+  public static function isHtaccessEnabled ()
+  {
+    return in_array('htaccess', \ModuleLoader::getActive());
+  }
+  
+  /**
+   * Checks whether creation of a domain specific robots.txt is allowed.
+   * @param $blnUseDomainSpecificRobotsTxt The value from the DataContainer.
+   * @return True, if the extension 'htaccess' is installed and the parametrized value in the page is checked.
+   */
+  public static function isDomainSpecicCreationAllowed ($blnUseDomainSpecificRobotsTxt)
+  {
+    return static::isHtaccessEnabled() && $blnUseDomainSpecificRobotsTxt;
+  }
+  
+  /**
+   * Returns the file path to the domain specific robots.txt file.
+   */
+  public static function getDomainSpecificFilePath ($strAlias)
+  {
+    return FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_Folder . "/" . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_PREFIX . $strAlias . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_SUFFIX;;
   }
 }

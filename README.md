@@ -11,6 +11,7 @@ Provides an editor for auto creation and modification of robots.txt inside a Con
 
 - Define content of robots.txt in root page
 - Add absolute path to sitemap
+- If the extension [hofff/contao-htaccess](https://packagist.org/packages/hofff/contao-htaccess) is installed it is possible to create different custom robots.txt files in a multi site installation.
 
 
 ## Compatibility
@@ -29,6 +30,8 @@ If you prefer to install it manually, download the latest release here: https://
 ## Dependency
 
 There are no dependencies to other extensions, that have to be installed.
+
+The extension [hofff/contao-htaccess](https://packagist.org/packages/hofff/contao-htaccess) is suggested to use different custom robots.txt files in a multi site installation.
 
 
 ## Screenshots
