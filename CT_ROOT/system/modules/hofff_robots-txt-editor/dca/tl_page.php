@@ -84,11 +84,10 @@ class tl_page_hofff_robots_txt_editor extends tl_page
    */
   public function modifyPaletteAndFields($dc)
   {
-    $objPage = \PageModel::findById((int) $dc->id);
-
-    if ($objPage != null)
+    $objPage = \Database::getInstance()->prepare("SELECT * FROM tl_page WHERE id = ?")->execute($dc->id);
+    if ($objPage->next())
     {
-      if ($objPage->createSitemap && $objPage->createRobotsTxt)
+      if ($objPage->createRobotsTxt)
       {
         $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] = $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] . ',robotsTxtAddAbsoluteSitemapPath';
       }
