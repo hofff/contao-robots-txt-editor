@@ -46,8 +46,8 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtAddAbsoluteSitemapPath'] = arr
 /**
  * Table tl_page
  */
-$GLOBALS['TL_DCA']['tl_page']['config']['onversion_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt');
-$GLOBALS['TL_DCA']['tl_page']['config']['onversion_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess');
+$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt');
+$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess');
 
 /**
  * Class tl_page_hofff_robots_txt_editor
@@ -101,7 +101,7 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   /**
    * Update the robots.txt when the page was stored.
    */
-  public function updateRobotsTxt($strTable, $intId, DataContainer $dc)
+  public function updateRobotsTxt(DataContainer $dc)
   {
     if (Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::generateRobotsTxts())
     {
@@ -116,7 +116,7 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   /**
    * Update the .htaccess when the page was stored.
    */
-  public function updateHtaccess($strTable, $intId, DataContainer $dc)
+  public function updateHtaccess(DataContainer $dc)
   {
     $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
     $objHtaccess->update();
