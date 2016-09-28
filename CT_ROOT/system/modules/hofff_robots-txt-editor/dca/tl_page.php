@@ -2,21 +2,9 @@
 
 $GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'][] = array('tl_page_hofff_robots_txt_editor', 'modifyPaletteAndFields');
 
-$arrLegends = explode(";", $GLOBALS['TL_DCA']['tl_page']['palettes']['root']);
-$legendKeyToInsert = 0;
-foreach($arrLegends as $legendKey=>$legend)
-{
-  if (strpos($legend, "{sitemap") === 0)
-  {
-    $legendKeyToInsert = $legendKey;
-    break;
-  }
-}
-array_splice($arrLegends, $legendKeyToInsert, 0, "{robotstxt_legend:hide},createRobotsTxt");
-$GLOBALS['TL_DCA']['tl_page']['palettes']['root'] = implode(";", $arrLegends);
-$GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = "createRobotsTxt";
+$GLOBALS['TL_DCA']['tl_page']['fields']['dns']['eval']['mandatory'] = true;
 
-$GLOBALS['TL_DCA']['tl_page']['subpalettes']['createRobotsTxt'] = "robotsTxtContent,useDomainSpecificRobotsTxt";
+$GLOBALS['TL_DCA']['tl_page']['fields']['fallback']['eval']['submitOnChange'] = true;
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['createRobotsTxt'] = array
 (
@@ -58,8 +46,8 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['robotsTxtAddAbsoluteSitemapPath'] = arr
 /**
  * Table tl_page
  */
-$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt');
-$GLOBALS['TL_DCA']['tl_page']['config']['onsubmit_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess');
+$GLOBALS['TL_DCA']['tl_page']['config']['onversion_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateRobotsTxt');
+$GLOBALS['TL_DCA']['tl_page']['config']['onversion_callback'][] = array('tl_page_hofff_robots_txt_editor', 'updateHtaccess');
 
 /**
  * Class tl_page_hofff_robots_txt_editor
@@ -85,44 +73,53 @@ class tl_page_hofff_robots_txt_editor extends tl_page
   public function modifyPaletteAndFields($dc)
   {
     $objPage = \Database::getInstance()->prepare("SELECT * FROM tl_page WHERE id = ?")->execute($dc->id);
-    if ($objPage->next())
+    if ($objPage->next() && $objPage->fallback)
     {
+      $arrLegends = explode(";", $GLOBALS['TL_DCA']['tl_page']['palettes']['root']);
+      $legendKeyToInsert = 0;
+      foreach($arrLegends as $legendKey=>$legend)
+      {
+        if (strpos($legend, "{sitemap") === 0)
+        {
+          $legendKeyToInsert = $legendKey;
+          break;
+        }
+      }
+      array_splice($arrLegends, $legendKeyToInsert, 0, "{robotstxt_legend:hide},createRobotsTxt");
+      $GLOBALS['TL_DCA']['tl_page']['palettes']['root'] = implode(";", $arrLegends);
+      $GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = "createRobotsTxt";
+
+      $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createRobotsTxt'] = "robotsTxtContent,useDomainSpecificRobotsTxt";
+      
       if ($objPage->createRobotsTxt)
       {
         $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] = $GLOBALS['TL_DCA']['tl_page']['subpalettes']['createSitemap'] . ',robotsTxtAddAbsoluteSitemapPath';
       }
-      
-      $GLOBALS['TL_DCA']['tl_page']['fields']['dns']['eval']['mandatory'] = $objPage->useDomainSpecificRobotsTxt;
     }
   }
-
 
   /**
-   * Update the robots.txt when saving the page.
+   * Update the robots.txt when the page was stored.
    */
-  public function updateRobotsTxt(DataContainer $dc)
+  public function updateRobotsTxt($strTable, $intId, DataContainer $dc)
   {
-    if ($dc->activeRecord->createRobotsTxt)
+    if (Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::generateRobotsTxts())
     {
-      $robotsTxtEditor = new Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor();
-      if ($robotsTxtEditor->createRobotsTxt($dc))
-      {
-        \Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['robotstxt_updated']);
-      }
-      else
-      {
-        \Message::addError($GLOBALS['TL_LANG']['ERR']['robotstxt_not_updated']);
-      }
+      \Message::addConfirmation($GLOBALS['TL_LANG']['MSC']['robotstxt_updated']);
+    }
+    else
+    {
+      \Message::addError($GLOBALS['TL_LANG']['ERR']['robotstxt_not_updated']);
     }
   }
 
-  public function updateHtaccess(DataContainer $dc)
+  /**
+   * Update the .htaccess when the page was stored.
+   */
+  public function updateHtaccess($strTable, $intId, DataContainer $dc)
   {
-    if (Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::isDomainSpecicCreationAllowed($dc->activeRecord->useDomainSpecificRobotsTxt))
-    {
-      $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
-      $objHtaccess->update();
-    }
+    $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
+    $objHtaccess->update();
   }
 
   /**
