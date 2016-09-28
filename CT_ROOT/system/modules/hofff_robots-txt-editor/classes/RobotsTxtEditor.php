@@ -101,7 +101,7 @@ class RobotsTxtEditor extends \System
         {
           $fileContent .= "Sitemap: " . $strDomain . "share/" . $objRootPage->sitemapName . ".xml\n";
         }
-      }\Message::addError($objFallbackRootPage->title . " .... " . $filePath . " .... " . $fileContent);
+      }
       
       if (file_put_contents($filePath, $fileContent) === FALSE)
       {
