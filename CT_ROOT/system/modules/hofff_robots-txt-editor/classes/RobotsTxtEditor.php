@@ -56,59 +56,60 @@ class RobotsTxtEditor extends \System
   }
   
   /**
-   * Create the robots.txt
-   * @param \DataContainer
+   * Generate the robots.txt files
    */
-  public function createRobotsTxt(\DataContainer $dc)
+  public static function generateRobotsTxts()
   {
-    $filePath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
-    
-    $objPage = $dc->activeRecord;
-        
-    if ($objPage != null)
+    // delete all existing domain specific robots.txt files
+    foreach (scandir(static::getDomainSpecificFolderPath(true)) as $entry)
     {
-      if (static::isDomainSpecicCreationAllowed($dc->activeRecord->useDomainSpecificRobotsTxt))
+      if (!is_dir($entry) &&
+          ($pos = strpos($entry, FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_PREFIX)) !== FALSE && $pos == 0 &&
+          ($pos = strpos($entry, FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_SUFFIX)) !== FALSE && $pos == (strlen($entry) - strlen(FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_SUFFIX)))
       {
-        $filePath = TL_ROOT . "/" . static::getDomainSpecificFilePath($dc->activeRecord->alias);
-        
-        // delete the old file, if the alias was changed
-        $objOldPage = \Contao\Database::getInstance()->prepare("SELECT * FROM tl_version WHERE fromTable=? AND pid=? ORDER BY version DESC")
-                                                   ->limit(1)
-                                                   ->execute('tl_page', $dc->id);
-        
-        if ($objOldPage != null && ($strAliasOld = deserialize($objOldPage->data)['alias']) && $strAliasOld!= $objPage->alias)
-        {
-          \Message::addInfo($GLOBALS['TL_LANG']['MSC']['DomainSpecificRobotsTxt_cleared']);
-          $filePathOld = TL_ROOT . "/" . static::getDomainSpecificFilePath($strAliasOld);
+        $filePathOld = static::getDomainSpecificFolderPath(true) . "/" . $entry;
           
-          if (file_exists($filePathOld))
-          {
-            unlink($filePathOld);
-          }
+        if (file_exists($filePathOld))
+        {
+          unlink($filePathOld);
         }
       }
+    }
+    
+    // create all robots.txt files
+    $blnGenerationSuccess = true;
+    
+    $objFallbackRootPage = static::getFallbackRootPages();
+    while ($objFallbackRootPage->next())
+    {
+      $filePath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
       
-      $fileContent = $objPage->robotsTxtContent;
-      
-      if ($objPage->createSitemap && $objPage->sitemapName != '' && $objPage->robotsTxtAddAbsoluteSitemapPath)
+      if (static::isDomainSpecicCreationAllowed($objFallbackRootPage->useDomainSpecificRobotsTxt))
       {
-        $strDomain = ($objPage->useSSL ? 'https://' : 'http://') . ($objPage->dns ?: \Environment::get('host')) . TL_PATH . '/'; 
+        $filePath = static::getDomainSpecificFilePath($objFallbackRootPage->alias, true);
+      }
+      
+      $fileContent = $objFallbackRootPage->robotsTxtContent;
+      
+      if ($objFallbackRootPage->createSitemap && $objFallbackRootPage->sitemapName != '' && $objFallbackRootPage->robotsTxtAddAbsoluteSitemapPath)
+      {
+        $strDomain = ($objFallbackRootPage->useSSL ? 'https://' : 'http://') . ($objFallbackRootPage->dns ?: \Environment::get('host')) . TL_PATH . '/'; 
         
         $fileContent .= "\n";
-        $fileContent .= "Sitemap: " . $strDomain . "share/" . $objPage->sitemapName . ".xml";
+        $objRootPage = static::getRootPagesByDns($objFallbackRootPage->dns);
+        while ($objRootPage->next())
+        {
+          $fileContent .= "Sitemap: " . $strDomain . "share/" . $objRootPage->sitemapName . ".xml\n";
+        }
       }
       
       if (file_put_contents($filePath, $fileContent) === FALSE)
       {
-        return false;
-      }
-      else
-      {
-        return true;
+        $blnGenerationSuccess = false;
       }
     }
     
-    return false;
+    return $blnGenerationSuccess;
   }
   
   /**
@@ -133,8 +134,39 @@ class RobotsTxtEditor extends \System
   /**
    * Returns the file path to the domain specific robots.txt file.
    */
-  public static function getDomainSpecificFilePath ($strAlias)
+  public static function getDomainSpecificFolderPath ($blnFullPath = false)
   {
-    return FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_Folder . "/" . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_PREFIX . $strAlias . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_SUFFIX;;
+    $domainSpecificFolderPath = FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_Folder;
+    if ($blnFullPath)
+    {
+      $domainSpecificFolderPath = TL_ROOT . "/" . $domainSpecificFolderPath;
+    }
+    return $domainSpecificFolderPath;
+  }
+  
+  /**
+   * Returns the file path to the domain specific robots.txt file.
+   */
+  public static function getDomainSpecificFilePath ($strAlias, $blnFullPath = false)
+  {
+    return static::getDomainSpecificFolderPath($blnFullPath) . "/" . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_PREFIX . $strAlias . FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_SUFFIX;
+  }
+  
+  /**
+   * Returns the fallback root page for a dns.
+   */
+  public static function getFallbackRootPages()
+  {
+    return \Database::getInstance()->prepare("SELECT * FROM tl_page WHERE published = 1 AND fallback = 1 ")
+                                   ->execute($strDns);
+  }
+  
+  /**
+   * Returns the root pages for a dns.
+   */
+  public static function getRootPagesByDns($strDns)
+  {
+    return \Database::getInstance()->prepare("SELECT * FROM tl_page WHERE published = 1 AND dns = ? ORDER BY fallback DESC, sorting")
+                                   ->execute($strDns);
   }
 }

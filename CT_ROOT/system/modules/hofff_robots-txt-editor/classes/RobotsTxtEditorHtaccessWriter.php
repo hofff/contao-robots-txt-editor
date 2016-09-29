@@ -44,7 +44,7 @@ class RobotsTxtEditorHtaccessWriter implements \Symfony\Component\EventDispatche
    */
   public function generateRewrites(\Bit3\Contao\Htaccess\Event\GenerateRewritesEvent $event)
   {
-    $objPages = \Contao\Database::getInstance()->prepare("SELECT alias, dns FROM tl_page WHERE createRobotsTxt = 1 AND useDomainSpecificRobotsTxt = 1 AND published = 1")->execute();
+    $objPages = \Contao\Database::getInstance()->prepare("SELECT alias, dns FROM tl_page WHERE createRobotsTxt = 1 AND useDomainSpecificRobotsTxt = 1 AND published = 1 AND fallback = 1")->execute();
     
     while ($objPages->next())
     {
