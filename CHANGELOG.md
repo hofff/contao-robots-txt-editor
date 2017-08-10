@@ -1,6 +1,9 @@
 Contao Extension "hofff/contao-robots-txt-editor"
 -------------------------------------------------
 
+### Version 1.1.1 (2017-08-xx) ###
+- Contao 4.4 ready
+
 ### Version 1.1.0 (2016-09-29) ###
 - Adds multilingual support (see #3)
 - Improves creation and cleanup of files
