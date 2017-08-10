@@ -34,6 +34,7 @@ class CreateDefaultRobotsTxt extends Controller
    */
   public function run()
   {
+      System::log("T: ".TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT, __METHOD__, TL_INFO);
       if (!file_exists(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
       {
         
