@@ -38,16 +38,23 @@ class RobotsTxtEditor extends \System
       return '';
     }
     
-    if (!file_exists(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
+    if (version_compare(VERSION, "4.4", '>='))
     {
-      \Message::addError($GLOBALS['TL_LANG']['ERR']['no_robotstxt_default']);
-      $this->redirect(str_replace('&key=importRobotsTxt', '', \Environment::get('request')));
+      $strFileContent = $GLOBALS['ROBOTS_TXT']['DEFAULT'];
     }
+    else
+    {
+      if (!file_exists(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
+      {
+        \Message::addError($GLOBALS['TL_LANG']['ERR']['no_robotstxt_default']);
+        $this->redirect(str_replace('&key=importRobotsTxt', '', \Environment::get('request')));
+      }
 
-    $objVersions = new \Versions($dc->table, \Input::get('id'));
-    $objVersions->create();
-    
-    $strFileContent = file_get_contents(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT);
+      $objVersions = new \Versions($dc->table, \Input::get('id'));
+      $objVersions->create();
+      
+      $strFileContent = file_get_contents(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT);
+    }
 
     \Database::getInstance()->prepare("UPDATE " . $dc->table . " SET robotsTxtContent=? WHERE id=?")
                             ->execute($strFileContent, \Input::get('id'));
@@ -82,7 +89,7 @@ class RobotsTxtEditor extends \System
     $objFallbackRootPage = static::getFallbackRootPages();
     while ($objFallbackRootPage->next())
     {
-      $filePath = TL_ROOT . "/" . FILE_ROBOTS_TXT;
+      $filePath = static::getSingleFilePath();
       
       if (static::isDomainSpecicCreationAllowed($objFallbackRootPage->useDomainSpecificRobotsTxt))
       {
@@ -122,6 +129,20 @@ class RobotsTxtEditor extends \System
   }
   
   /**
+   * Return the path to the single file
+   */
+  public static function getSingleFilePath ()
+  {
+    $strPath = TL_ROOT;
+    if (version_compare(VERSION, "4.4", '>='))
+    {
+      $strPath .= "/web";
+    }
+    
+    return $strPath .= "/" . FILE_ROBOTS_TXT;
+  }
+  
+  /**
    * Checks whether creation of a domain specific robots.txt is allowed.
    * @param $blnUseDomainSpecificRobotsTxt The value from the DataContainer.
    * @return True, if the extension 'htaccess' is installed and the parametrized value in the page is checked.
@@ -137,6 +158,10 @@ class RobotsTxtEditor extends \System
   public static function getDomainSpecificFolderPath ($blnFullPath = false)
   {
     $domainSpecificFolderPath = FILE_ROBOTS_TXT_DOMAIN_SPECIFIC_Folder;
+    if (version_compare(VERSION, "4.4", '>='))
+    {
+      $domainSpecificFolderPath = "web/" . $domainSpecificFolderPath;
+    }
     if ($blnFullPath)
     {
       $domainSpecificFolderPath = TL_ROOT . "/" . $domainSpecificFolderPath;
