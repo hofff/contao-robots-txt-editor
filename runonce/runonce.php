@@ -34,10 +34,11 @@ class CreateDefaultRobotsTxt extends Controller
    */
   public function run()
   {
-      System::log("T: ".TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT, __METHOD__, TL_INFO);
+    // only copy the file in Contao version below 4.4
+    if (!version_compare(VERSION, "4.4", '>='))
+    {
       if (!file_exists(TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
       {
-        
         if (copy(TL_ROOT . "/" . FILE_ROBOTS_TXT, TL_ROOT . "/" . FILE_ROBOTS_TXT_DEFAULT))
         {
           \System::log('Initial copied the "' . FILE_ROBOTS_TXT . '" to "' . FILE_ROBOTS_TXT_DEFAULT . '".', 'CreateDefaultRobotsTxt::run()', 'TL_INFO');
@@ -47,6 +48,7 @@ class CreateDefaultRobotsTxt extends Controller
           \System::log('Initial copying the "' . FILE_ROBOTS_TXT . '" failed.', 'CreateDefaultRobotsTxt::run()', 'TL_ERROR');
         }
       }
+    }
   }
 }
 
