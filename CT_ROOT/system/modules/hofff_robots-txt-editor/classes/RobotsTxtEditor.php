@@ -125,8 +125,8 @@ class RobotsTxtEditor extends \System
    */
   public static function isHtaccessEnabled ()
   {
-    System::log("Prüfe", __METHOD__, TL_INFO);
-    System::log(print_r(\ModuleLoader::getActive(), true), __METHOD__, TL_INFO);
+    \System::log("Pruefe", __METHOD__, TL_INFO);
+    \System::log(print_r(\ModuleLoader::getActive(), true), __METHOD__, TL_INFO);
     return in_array('htaccess', \ModuleLoader::getActive());
   }
   
