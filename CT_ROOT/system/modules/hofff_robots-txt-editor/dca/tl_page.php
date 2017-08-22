@@ -118,8 +118,11 @@ class tl_page_hofff_robots_txt_editor extends tl_page
    */
   public function updateHtaccess(DataContainer $dc)
   {
-    $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
-    $objHtaccess->update();
+    if (Hofff\Contao\RobotsTxtEditor\RobotsTxtEditor::isHtaccessEnabled())
+    {
+      $objHtaccess = Bit3\Contao\Htaccess\Htaccess::getInstance();
+      $objHtaccess->update();
+    }
   }
 
   /**
