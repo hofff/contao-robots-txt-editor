@@ -9,17 +9,6 @@ $GLOBALS['BE_MOD']['design']['page']['importRobotsTxt'] = array('Hofff\Contao\Ro
  * Default robots.txt content(used for import, if there is not default file)
  */
 $GLOBALS['ROBOTS_TXT']['DEFAULT'] = "User-agent: *
-Disallow: /check/
-Disallow: /contao/
-Disallow: /system/
-Disallow: /templates/
-Disallow: /vendor/
-Disallow: /share/index.php
-Disallow: /build.xml
-Disallow: /composer.json
-Disallow: /composer.lock
-Disallow: /README.md
-Allow: /system/cron/cron.txt
 Allow: /system/modules/*/assets/
 Allow: /system/modules/*/html/";
 
