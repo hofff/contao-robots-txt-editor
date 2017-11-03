@@ -9,8 +9,8 @@ $GLOBALS['BE_MOD']['design']['page']['importRobotsTxt'] = array('Hofff\Contao\Ro
  * Default robots.txt content(used for import, if there is not default file)
  */
 $GLOBALS['ROBOTS_TXT']['DEFAULT'] = "User-agent: *
-Allow: /system/modules/*/assets/
-Allow: /system/modules/*/html/";
+Disallow: /check/
+Disallow: /contao-manager.phar.php";
 
 /**
  * File constants 
