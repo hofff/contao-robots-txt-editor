@@ -1,3 +1,7 @@
+**This repository will not be maintained anymore, because the functions provided are no longer needed since Contao 4 and are already included in Contao core.**
+--
+
+
 [![Latest Version on Packagist](http://img.shields.io/packagist/v/hofff/contao-robots-txt-editor.svg?style=flat)](https://packagist.org/packages/hofff/contao-robots-txt-editor)
 [![Installations via composer per month](http://img.shields.io/packagist/dm/hofff/contao-robots-txt-editor.svg?style=flat)](https://packagist.org/packages/hofff/contao-robots-txt-editor)
 [![Installations via composer total](http://img.shields.io/packagist/dt/hofff/contao-robots-txt-editor.svg?style=flat)](https://packagist.org/packages/hofff/contao-robots-txt-editor)
